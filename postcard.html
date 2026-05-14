@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>HTG Widokówka</title>
+  <meta name="description" content="Pamiątkowa widokówka z misji HTG" />
+
+  <link rel="stylesheet" href="./assets/postcard.css" />
+</head>
+
+<body>
+  <main class="page">
+    <article class="postcard" id="postcard" hidden>
+      <img class="postcard__image" id="postcardImage" src="" alt="" />
+
+      <section class="message" id="messageBox" aria-label="Wynik misji">
+        <p class="message__eyebrow">Gratulacje!</p>
+        <p class="message__text" id="messageText"></p>
+      </section>
+    </article>
+
+    <section class="fallback" id="fallback" hidden>
+      <h1>Nie znaleziono widokówki</h1>
+      <p>Link jest niepełny albo zawiera nieprawidłowe dane.</p>
+      <p>Poprawny format adresu:</p>
+      <code>postcard.html?year=1260&amp;score=5</code>
+    </section>
+  </main>
+
+  <script>
+    const POSTCARDS = {
+      "1260": {
+        title: "Początek na Kępie",
+        image: "./images/1260.png",
+        alt: "Widokówka z epoki 1260, Początek na Kępie",
+        messageClass: "message--1260",
+      },
+      "1750": {
+        title: "Zakupy z całego świata",
+        image: "./images/1750.png",
+        alt: "Widokówka z epoki 1750, Zakupy z całego świata",
+        messageClass: "message--1750",
+      },
+      "1894": {
+        title: "Architekt nowoczesnej Hali",
+        image: "./images/1894.png",
+        alt: "Widokówka z epoki 1894, Architekt nowoczesnej Hali",
+        messageClass: "message--1894",
+      },
+      "1896": {
+        title: "Pierwszy dzień pod dachem",
+        image: "./images/1896.png",
+        alt: "Widokówka z epoki 1896, Pierwszy dzień pod dachem",
+        messageClass: "message--1896",
+      },
+      "1931": {
+        title: "Restaurator z Hali",
+        image: "./images/1931.png",
+        alt: "Widokówka z epoki 1931, Restaurator z Hali",
+        messageClass: "message--1931",
+      },
+      "1975": {
+        title: "Zapach mandarynek",
+        image: "./images/1975.png",
+        alt: "Widokówka z epoki 1975, Zapach mandarynek",
+        messageClass: "message--1975",
+      },
+      "2026": {
+        title: "Siedemset lat w jednym miejscu",
+        image: "./images/2026.png",
+        alt: "Widokówka z epoki 2026, Siedemset lat w jednym miejscu",
+        messageClass: "message--2026",
+      },
+    }
+
+    const params = new URLSearchParams(window.location.search)
+
+    const requestedYear = params.get("year")
+    const requestedScore = Number(params.get("score"))
+
+    const hasValidYear = POSTCARDS[requestedYear] !== undefined
+    const hasValidScore =
+      Number.isInteger(requestedScore) &&
+      requestedScore >= 1 &&
+      requestedScore <= 5
+
+    const postcardElement = document.getElementById("postcard")
+    const fallbackElement = document.getElementById("fallback")
+
+    if (!hasValidYear || !hasValidScore) {
+      document.title = "Nie znaleziono widokówki | HTG"
+      fallbackElement.hidden = false
+    } else {
+      const postcard = POSTCARDS[requestedYear]
+
+      document.title = `${postcard.title} | ${requestedScore}/5 pkt`
+
+      const image = document.getElementById("postcardImage")
+      image.src = postcard.image
+      image.alt = postcard.alt
+
+      const messageBox = document.getElementById("messageBox")
+      messageBox.classList.add(postcard.messageClass)
+
+      document.getElementById("messageText").textContent =
+        `Zdobyłeś ${requestedScore}/5 pkt`
+
+      postcardElement.hidden = false
+    }
+  </script>
+</body>
+</html>

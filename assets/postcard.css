@@ -1,0 +1,191 @@
+:root {
+  --page-bg: #f3eadc;
+  --text: #2a2017;
+  --muted: #735f48;
+  --shadow: 0 24px 70px rgba(55, 38, 18, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--page-bg);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.72), transparent 46rem),
+    var(--page-bg);
+}
+
+.page {
+  width: min(100%, 980px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.postcard {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #fff8ed;
+  box-shadow: var(--shadow);
+}
+
+.postcard__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.message {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  color: #6e3e18;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.message__eyebrow {
+  margin: 0 0 0.12em;
+  font-size: clamp(13px, 2.5vw, 28px);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.message__text {
+  margin: 0;
+  font-size: clamp(18px, 4vw, 44px);
+  line-height: 1.06;
+  font-weight: 800;
+}
+
+/*
+  Pozycje tekstu są procentowe względem obrazka.
+  Te wartości dopasowujemy ręcznie do pustej etykiety na każdej pocztówce.
+*/
+
+/* 1260 */
+.message--1260 {
+  left: 58%;
+  top: 79%;
+  width: 34%;
+  height: 13%;
+}
+
+/* 1750 */
+.message--1750 {
+  left: 54%;
+  top: 77%;
+  width: 38%;
+  height: 14%;
+}
+
+/* 1894 */
+.message--1894 {
+  left: 53%;
+  top: 76%;
+  width: 39%;
+  height: 13%;
+}
+
+/* 1896 */
+.message--1896 {
+  left: 52%;
+  top: 78%;
+  width: 39%;
+  height: 14%;
+}
+
+/* 1931 */
+.message--1931 {
+  left: 50%;
+  top: 80%;
+  width: 41%;
+  height: 13%;
+}
+
+/* 1975 */
+.message--1975 {
+  left: 52%;
+  top: 80%;
+  width: 40%;
+  height: 12%;
+}
+
+/* 2026 */
+.message--2026 {
+  left: 50%;
+  top: 73%;
+  width: 43%;
+  height: 16%;
+}
+
+.fallback {
+  width: min(720px, 100%);
+  padding: 28px;
+  border-radius: 22px;
+  background: rgba(255, 248, 237, 0.92);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.fallback h1 {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 6vw, 44px);
+}
+
+.fallback p {
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.fallback code {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(42, 32, 23, 0.08);
+  color: var(--text);
+  font-size: 15px;
+}
+
+@media (max-width: 520px) {
+  .page {
+    padding: 10px;
+  }
+
+  .postcard {
+    border-radius: 16px;
+  }
+
+  .message__eyebrow {
+    font-size: clamp(11px, 2.5vw, 18px);
+  }
+
+  .message__text {
+    font-size: clamp(15px, 3.8vw, 28px);
+  }
+}
