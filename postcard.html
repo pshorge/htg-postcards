@@ -7,7 +7,7 @@
   <title>HTG Widokówka</title>
   <meta name="description" content="Pamiątkowa widokówka z misji HTG" />
 
-  <link rel="stylesheet" href="./assets/postcard.css" />
+  <link rel="stylesheet" href="./assets/postcard.css?v=20260724-2" />
 </head>
 
 <body>
@@ -16,99 +16,147 @@
       <img class="postcard__image" id="postcardImage" src="" alt="" />
 
       <section class="message" id="messageBox" aria-label="Wynik misji">
-        <p class="message__eyebrow">Gratulacje!</p>
+        <p class="message__eyebrow" id="messageEyebrow"></p>
         <p class="message__text" id="messageText"></p>
       </section>
     </article>
 
     <section class="fallback" id="fallback" hidden>
-      <h1>Nie znaleziono widokówki</h1>
-      <p>Link jest niepełny albo zawiera nieprawidłowe dane.</p>
-      <p>Poprawny format adresu:</p>
-      <code>postcard.html?year=1260&amp;score=5</code>
+      <h1 id="fallbackTitle">Nie znaleziono widokówki</h1>
+      <p id="fallbackText1">Link jest niepełny albo zawiera nieprawidłowe dane.</p>
+      <p id="fallbackText2">Poprawny format adresu:</p>
+      <code>postcard.html?year=1260&amp;score=5&amp;lang=pl</code>
     </section>
   </main>
 
   <script>
+    const CACHE_VERSION = "20260724-2";
+
     const POSTCARDS = {
       "1260": {
         title: "Początek na Kępie",
-        image: "./images/1260.png",
-        alt: "Widokówka z epoki 1260, Początek na Kępie",
-        messageClass: "message--1260",
+        image: `./images/1260.png?v=${CACHE_VERSION}`,
+        alt: "Widokówka z epoki 1260, Początek na Kępie"
       },
       "1750": {
         title: "Zakupy z całego świata",
-        image: "./images/1750.png",
-        alt: "Widokówka z epoki 1750, Zakupy z całego świata",
-        messageClass: "message--1750",
+        image: `./images/1750.png?v=${CACHE_VERSION}`,
+        alt: "Widokówka z epoki 1750, Zakupy z całego świata"
       },
       "1894": {
         title: "Architekt nowoczesnej Hali",
-        image: "./images/1894.png",
-        alt: "Widokówka z epoki 1894, Architekt nowoczesnej Hali",
-        messageClass: "message--1894",
+        image: `./images/1894.png?v=${CACHE_VERSION}`,
+        alt: "Widokówka z epoki 1894, Architekt nowoczesnej Hali"
       },
       "1896": {
         title: "Pierwszy dzień pod dachem",
-        image: "./images/1896.png",
-        alt: "Widokówka z epoki 1896, Pierwszy dzień pod dachem",
-        messageClass: "message--1896",
+        image: `./images/1896.png?v=${CACHE_VERSION}`,
+        alt: "Widokówka z epoki 1896, Pierwszy dzień pod dachem"
       },
       "1931": {
         title: "Restaurator z Hali",
-        image: "./images/1931.png",
-        alt: "Widokówka z epoki 1931, Restaurator z Hali",
-        messageClass: "message--1931",
+        image: `./images/1931.png?v=${CACHE_VERSION}`,
+        alt: "Widokówka z epoki 1931, Restaurator z Hali"
       },
       "1975": {
         title: "Zapach mandarynek",
-        image: "./images/1975.png",
-        alt: "Widokówka z epoki 1975, Zapach mandarynek",
-        messageClass: "message--1975",
-      },
-      "2026": {
-        title: "Siedemset lat w jednym miejscu",
-        image: "./images/2026.png",
-        alt: "Widokówka z epoki 2026, Siedemset lat w jednym miejscu",
-        messageClass: "message--2026",
-      },
+        image: `./images/1975.png?v=${CACHE_VERSION}`,
+        alt: "Widokówka z epoki 1975, Zapach mandarynek"
+      }
+    };
+
+    function formatPolishPoints(score) {
+      if (score === 1) return "1 punkt";
+
+      const mod10 = score % 10;
+      const mod100 = score % 100;
+
+      if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+        return `${score} punkty`;
+      }
+
+      return `${score} punktów`;
     }
 
-    const params = new URLSearchParams(window.location.search)
+    const COPY = {
+      pl: {
+        congratulations: "Gratulacje!",
+        invalidTitle: "Nie znaleziono widokówki | HTG",
+        fallbackTitle: "Nie znaleziono widokówki",
+        fallbackText1: "Link jest niepełny albo zawiera nieprawidłowe dane.",
+        fallbackText2: "Poprawny format adresu:",
+        ariaLabel: "Wynik misji",
+        titleSuffix: "pkt",
+        scoreText: (score) => `Zdobyłeś ${formatPolishPoints(score)}`
+      },
+      en: {
+        congratulations: "Congratulations!",
+        invalidTitle: "Postcard not found | HTG",
+        fallbackTitle: "Postcard not found",
+        fallbackText1: "The link is incomplete or contains invalid data.",
+        fallbackText2: "Correct URL format:",
+        ariaLabel: "Mission result",
+        titleSuffix: "pts",
+        scoreText: (score) =>
+          `You scored ${score} ${score === 1 ? "point" : "points"}`
+      }
+    };
 
-    const requestedYear = params.get("year")
-    const requestedScore = Number(params.get("score"))
+    const params = new URLSearchParams(window.location.search);
 
-    const hasValidYear = POSTCARDS[requestedYear] !== undefined
+    const requestedYear = params.get("year");
+    const requestedScore = Number(params.get("score"));
+    const requestedLangRaw = (params.get("lang") || "pl").toLowerCase();
+    const requestedLang = COPY[requestedLangRaw] ? requestedLangRaw : "pl";
+    const copy = COPY[requestedLang];
+
+    document.documentElement.lang = requestedLang;
+
+    const hasValidYear = POSTCARDS[requestedYear] !== undefined;
     const hasValidScore =
       Number.isInteger(requestedScore) &&
       requestedScore >= 1 &&
-      requestedScore <= 5
+      requestedScore <= 5;
 
-    const postcardElement = document.getElementById("postcard")
-    const fallbackElement = document.getElementById("fallback")
+    const postcardElement = document.getElementById("postcard");
+    const fallbackElement = document.getElementById("fallback");
+
+    const fallbackTitle = document.getElementById("fallbackTitle");
+    const fallbackText1 = document.getElementById("fallbackText1");
+    const fallbackText2 = document.getElementById("fallbackText2");
+
+    function showFallback() {
+      document.title = copy.invalidTitle;
+      fallbackTitle.textContent = copy.fallbackTitle;
+      fallbackText1.textContent = copy.fallbackText1;
+      fallbackText2.textContent = copy.fallbackText2;
+      fallbackElement.hidden = false;
+    }
 
     if (!hasValidYear || !hasValidScore) {
-      document.title = "Nie znaleziono widokówki | HTG"
-      fallbackElement.hidden = false
+      showFallback();
     } else {
-      const postcard = POSTCARDS[requestedYear]
+      const postcard = POSTCARDS[requestedYear];
 
-      document.title = `${postcard.title} | ${requestedScore}/5 pkt`
+      document.title =
+        `${postcard.title} | ${requestedScore}/5 ${copy.titleSuffix}`;
 
-      const image = document.getElementById("postcardImage")
-      image.src = postcard.image
-      image.alt = postcard.alt
+      const image = document.getElementById("postcardImage");
+      image.src = postcard.image;
+      image.alt = postcard.alt;
 
-      const messageBox = document.getElementById("messageBox")
-      messageBox.classList.add(postcard.messageClass)
+      const messageBox = document.getElementById("messageBox");
+      messageBox.setAttribute("aria-label", copy.ariaLabel);
+
+      document.getElementById("messageEyebrow").textContent =
+        copy.congratulations;
 
       document.getElementById("messageText").textContent =
-        `Zdobyłeś ${requestedScore}/5 pkt`
+        copy.scoreText(requestedScore);
 
-      postcardElement.hidden = false
+      postcardElement.hidden = false;
     }
   </script>
 </body>
 </html>
+

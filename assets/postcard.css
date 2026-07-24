@@ -1,26 +1,53 @@
 :root {
   --page-bg: #f3eadc;
+  --card-bg: #fff8ed;
   --text: #2a2017;
   --muted: #735f48;
+  --brand-orange: #fe6e32;
+  --score-color: #ffffff;
   --shadow: 0 24px 70px rgba(55, 38, 18, 0.28);
+
+  --message-left: 45%;
+  --message-top: 3.5%;
+  --message-width: 50%;
+  --message-height: 11.5%;
+}
+
+@font-face {
+  font-family: "Hala Targowa Sans";
+  src: url("./fonts/HalaTargowaSans-Regular.otf") format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./fonts/Poppins-Medium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html {
+html,
+body {
+  width: 100%;
   min-height: 100%;
+  margin: 0;
+}
+
+html {
   background: var(--page-bg);
 }
 
 body {
-  min-height: 100%;
-  margin: 0;
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+  min-height: 100svh;
+  overflow: auto;
+  font-family: Georgia, "Times New Roman", serif;
   color: var(--text);
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.72), transparent 46rem),
@@ -28,9 +55,9 @@ body {
 }
 
 .page {
-  width: min(100%, 980px);
-  min-height: 100vh;
-  margin: 0 auto;
+  width: 100%;
+  min-height: 100svh;
+  margin: 0;
   padding: 18px;
   display: flex;
   align-items: center;
@@ -39,110 +66,66 @@ body {
 
 .postcard {
   position: relative;
-  width: 100%;
+  width: min(
+    calc(100vw - 36px),
+    calc((100svh - 36px) * 0.5625)
+  );
+  max-width: 1080px;
+  aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: 22px;
-  background: #fff8ed;
+  background: var(--card-bg);
   box-shadow: var(--shadow);
+  container-type: inline-size;
 }
 
 .postcard__image {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 .message {
   position: absolute;
   z-index: 2;
+  left: var(--message-left);
+  top: var(--message-top);
+  width: var(--message-width);
+  height: var(--message-height);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  text-align: center;
+  text-align: left;
   pointer-events: none;
-  color: #6e3e18;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .message__eyebrow {
-  margin: 0 0 0.12em;
-  font-size: clamp(13px, 2.5vw, 28px);
+  margin: 0 0 0.22em;
+  font-family: "Hala Targowa Sans", Arial, sans-serif;
+  font-size: 6cqw;
   line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 400;
+  color: var(--brand-orange);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.18);
 }
 
 .message__text {
   margin: 0;
-  font-size: clamp(18px, 4vw, 44px);
-  line-height: 1.06;
-  font-weight: 800;
-}
-
-/*
-  Pozycje tekstu są procentowe względem obrazka.
-  Te wartości dopasowujemy ręcznie do pustej etykiety na każdej pocztówce.
-*/
-
-/* 1260 */
-.message--1260 {
-  left: 58%;
-  top: 79%;
-  width: 34%;
-  height: 13%;
-}
-
-/* 1750 */
-.message--1750 {
-  left: 54%;
-  top: 77%;
-  width: 38%;
-  height: 14%;
-}
-
-/* 1894 */
-.message--1894 {
-  left: 53%;
-  top: 76%;
-  width: 39%;
-  height: 13%;
-}
-
-/* 1896 */
-.message--1896 {
-  left: 52%;
-  top: 78%;
-  width: 39%;
-  height: 14%;
-}
-
-/* 1931 */
-.message--1931 {
-  left: 50%;
-  top: 80%;
-  width: 41%;
-  height: 13%;
-}
-
-/* 1975 */
-.message--1975 {
-  left: 52%;
-  top: 80%;
-  width: 40%;
-  height: 12%;
-}
-
-/* 2026 */
-.message--2026 {
-  left: 50%;
-  top: 73%;
-  width: 43%;
-  height: 16%;
+  font-family: "Poppins", Arial, sans-serif;
+  font-size: 2.6cqw;
+  line-height: 1.15;
+  font-weight: 500;
+  color: var(--score-color);
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
 }
 
 .fallback {
-  width: min(720px, 100%);
+  width: min(720px, calc(100vw - 36px));
   padding: 28px;
   border-radius: 22px;
   background: rgba(255, 248, 237, 0.92);
@@ -174,18 +157,19 @@ body {
 
 @media (max-width: 520px) {
   .page {
-    padding: 10px;
+    padding: 8px;
   }
 
   .postcard {
-    border-radius: 16px;
+    width: min(
+      calc(100vw - 16px),
+      calc((100svh - 16px) * 0.5625)
+    );
+    border-radius: 14px;
   }
 
-  .message__eyebrow {
-    font-size: clamp(11px, 2.5vw, 18px);
-  }
-
-  .message__text {
-    font-size: clamp(15px, 3.8vw, 28px);
+  .fallback {
+    width: calc(100vw - 16px);
+    padding: 18px;
   }
 }
